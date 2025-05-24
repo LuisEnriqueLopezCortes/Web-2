@@ -1,0 +1,30 @@
+
+body {
+  background-color: #585d69 !important;
+  font-family: 'CentraDos', sans-serif !important;
+}
+
+@font-face {
+  font-family: 'DynaPuff';
+  src: url('./assets/font/DynaPuff-VariableFont_wdth,wght.ttf') format('truetype'); 
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'CentraUno';
+  src: url('./assets/font/CentraNo2-Bold.ttf') format('truetype'); 
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'CentraDos';
+  src: url('./assets/font/CentraNo2-Book.ttf') format('truetype'); 
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'CentraTres';
+  src: url('./assets/font/CentraNo2-Medium.ttf') format('truetype'); 
+  font-weight: normal;
+  font-style: normal;
+}

@@ -1,0 +1,109 @@
+/* Sección 1 */
+.container-welcomecards {
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background-color: #0e1028;
+  text-align: center;
+
+  position: relative;
+  padding: 100px;
+  overflow: hidden;
+  background-image: radial-gradient(circle at 35% 10%, rgba(197, 11, 11, 0.3) 0.3%, transparent 30%),
+                    radial-gradient(circle at 70% 20%, rgba(76, 0, 255, 0.3) 0.3%, transparent 30%),
+                    radial-gradient(circle at 45% 70%, rgba(128, 0, 128, 0.3) 2%, transparent 50%);
+  background-size: 950px 950px;
+  background-repeat:space;
+}
+
+/* WelcomeCards Styles */
+.cards-home {
+  display: flex;
+  margin-top: 50px;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.card-ind {
+  color: rgb(252, 250, 252);
+  padding: 1rem;
+  height: 100%;
+  transform: scale(1);
+  transition: all 1s;
+  margin: 0 50px;
+  background-color: #0e193a; /*AQUI ES DONDE CAMBIA EL COLOR DEL FONDO DE LA TARJETA?*/
+  max-width: 300px;
+  border-radius: 30px;
+  box-shadow: 0 0 15px 5px rgba(34, 48, 87, 0.559);
+}
+
+.card-subtitulo{
+  margin: 30px;
+}
+
+.card-parrafo{
+  margin-bottom: 50px;
+}
+
+.card-ind:hover {
+  transform: scale(1.1);
+  background: #6d3583d0;
+  color: rgb(255, 255, 255);
+  transition: all 0.7s;
+
+  box-shadow: 0 0 15px 5px rgba(40, 54, 92, 0.559);
+}
+
+.card-ind img {
+  width: 100%;
+  border-radius: 50px;
+}
+
+/* Carousel Styles */
+.custom-carousel-home {
+  padding-top: 20px;
+}
+
+/* Carousel Styles */
+.custom-carousel-explore {
+  padding-top: 120px;
+}
+
+/* Card Styles */
+.custom-cardResenia-home {
+  padding-top: 80px;
+}
+
+
+/*  background: #060e24;
+TODO
+*/
+.container-todo-home{
+  background: radial-gradient(
+    circle at top center,
+    rgba(50, 9, 60, 0.7),
+    #0e0f27 18%
+  );
+  padding-top: 100px;
+}
+
+.texto-titulo{
+  color: #ffffff;
+  font-size: 4rem;
+  /*text-shadow: 20px 20px 15px rgba(0, 0, 0, 0.5);*/
+  padding-top: 50px;
+  margin-left: 10%;
+  margin-right: 15%;
+}
+
+
+
+/* Nuevos lanzamientos */
+
+
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}

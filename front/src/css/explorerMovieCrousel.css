@@ -1,0 +1,74 @@
+.carousel-custom-categoria {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.img-square-cat {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 5;
+}
+
+.card-container-categoria {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  margin-left: 0;
+}
+
+.movies-list-categoria {
+  width: 80%;
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+}
+
+.text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background-color: rgb(27, 53, 101);
+  border-radius: 10%;
+  text-align: center;
+  padding: 2% 5%;
+  z-index: 20;
+  transition: transform 0.3s ease;
+}
+
+.card-container-img-categoria {
+  position: relative;
+  width: 230px;
+  margin-right: 10px;
+  overflow: hidden;
+  border-radius: 10%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.card-container-img-categoria::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(55, 87, 138, 0), #0b1e3dcc 78%);
+  z-index: 6;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.card-container-img-categoria:hover .img-square-cat {
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.card-container-img-categoria:hover .text-overlay {
+  transform: translate(-50%, 90%);
+}

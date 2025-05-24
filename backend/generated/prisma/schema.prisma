@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:admin@localhost:5432/moviebox"
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  nombre  String
+  email   String   @unique
+  tipo    String
+  imagen  String? // URL o path de imagen
+  reviews Review[]
+}
+
+model Pelicula {
+  id          Int      @id @default(autoincrement())
+  titulo      String
+  genero      String
+  descripcion String
+  imagen      String? // URL o path de imagen
+  reviews     Review[]
+}
+
+model Review {
+  id         Int    @id @default(autoincrement())
+  userId     Int
+  peliculaId Int
+  comentario String
+  rating     Int
+
+  user      User     @relation(fields: [userId], references: [id])
+  pelicula  Pelicula @relation(fields: [peliculaId], references: [id])
+  createdAt DateTime @default(now())
+}

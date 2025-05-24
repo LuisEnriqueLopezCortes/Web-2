@@ -1,0 +1,89 @@
+.container-form-registro {
+  flex: 1 0 100%;
+  max-width: 100%;
+  width: 100%;
+  padding: 35px;
+}
+
+.registro-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #081837;
+  margin: 0 auto;
+  max-width: 300px;
+  border-radius: 25px;
+}
+
+.iconregistro {
+  text-align: center;
+}
+
+.iconregistro i {
+  font-size: 6rem;
+  color: #e9ecef;
+}
+
+.h2-registro {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.input-box-registro {
+  position: relative;
+}
+
+.input-icon-registro {
+  background: #e9ecef;
+  padding: 0.5rem 1rem;
+  border-radius: 5px 0 0 5px;
+}
+
+.input-icon i {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.toggle-password {
+  cursor: pointer;
+}
+
+.btn-registro {
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  justify-content: center;
+  margin: 0 auto;
+  display: block;
+}
+
+.form-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.file-upload-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.file-upload-text {
+  color: #6c757d;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}

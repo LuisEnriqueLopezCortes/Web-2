@@ -1,0 +1,152 @@
+:root {
+  --primary-bg: #272532;
+  --highlight-color: orange;
+  --text-color: white;
+}
+
+/* Contenedor general del carrusel */
+.carousel-custom-wrapper {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  height: 600px;
+}
+
+/* Estilos para la caja que contiene la imagen y la información */
+.carousel-inner {
+  justify-content: center;
+}
+
+.carousel-item {
+  align-items: stretch;
+  display: flex;
+}
+
+.carousel-content {
+  display: flex;
+  width: 100%;
+  max-width: 85%;
+  margin: 0 auto; 
+}
+
+.image-container {
+  width: 44%;
+  height: 100%;
+}
+
+.carousel-information {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.372);
+  color: var(--text-color);
+  padding: 30px;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0% 8% 8% 0%;
+
+}
+
+/* Estilos para la imagen */
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8% 0% 0% 8%;
+}
+
+/* Títulos y texto */
+.carousel-title {
+  cursor: pointer;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* Contenedor de tiempo y fecha */
+.container-time-date {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.time-container,
+.calendar-container {
+  gap: 8px;
+}
+
+/* Descripción */
+.description-container {
+  margin-top: 5%;
+  width: 100%;
+  height: 300px;
+  overflow-y: auto;
+  text-align: justify;
+}
+
+/* Valoración de la película */
+.movie-stars i {
+  color: var(--highlight-color);
+  font-size: 1.7rem;
+}
+
+.movie-vote {
+  background: var(--primary-bg);
+  color: var(--highlight-color);
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.5rem;
+}
+
+/* Botones de navegación */
+.btn-custom {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #ffffff00;
+  border: none;
+  font-size: 6rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  z-index: 2;
+  transition: background-color 0.3s ease-in-out 0s;
+  transition: transform 0.3s ease-in-out, color 0.15s ease-in-out;
+
+}
+.btn-custom i {
+  text-shadow: 3px 0 currentColor, -3px 0 currentColor;
+}
+
+.btn-custom:hover {
+  color: #0e20448f;
+  transform: translateY(-50%) scale(1.3);
+}
+
+.btn-custom.prev {
+  left: -20px;
+}
+
+.btn-custom.next {
+  right: -20px;
+}
+
+/* Indicadores personalizados */
+.indicator-dot {
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  border: none;
+  background-color: #ccc;
+  cursor: pointer;
+  font-size: 0.5rem;
+  transition: background-color 0.5s ease 0s, transform 0.5s ease 0s;
+}
+
+.indicator-dot.active {
+  background-color: #333;
+}
+.custom-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
