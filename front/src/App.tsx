@@ -7,6 +7,8 @@ import { Footer } from "./components/layouts/footer.tsx";
 import { CardPublicacion } from "./components/pelicula/publicacion.tsx";
 import { CardPelicula } from "./components/pelicula/pelicula.tsx";
 import { CardResenias } from "./components/pelicula/resenias.tsx";
+import { ChatsComponent } from "./components/usuario/chat.tsx";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Route, BrowserRouter as Router, Routes  } from 'react-router-dom';
@@ -29,7 +31,9 @@ function App() {
             <Route path="/publicaciones" element={<CardPublicacion />} />
             <Route path="/peliculas" element={<CardPelicula />} />
             <Route path="/resenias" element={<CardResenias />} />
-            
+
+            <Route path="/chats" element={<ChatsComponent />} />
+
           </Routes>
           <Footer />
         </Router>
