@@ -1,0 +1,55 @@
+{
+  "hash": "fdecbd17",
+  "configHash": "efb54770",
+  "lockfileHash": "7b5e2a4c",
+  "browserHash": "d46d70d2",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "febd67cd",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "e95dae1b",
+      "needsInterop": true
+    },
+    "bootstrap/dist/js/bootstrap.bundle.min": {
+      "src": "../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+      "file": "bootstrap_dist_js_bootstrap__bundle__min.js",
+      "fileHash": "b272e52c",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "d13e82da",
+      "needsInterop": false
+    },
+    "react-bootstrap": {
+      "src": "../../node_modules/react-bootstrap/esm/index.js",
+      "file": "react-bootstrap.js",
+      "fileHash": "fcaff88f",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "adf79cc0",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-DNLHEKFE": {
+      "file": "chunk-DNLHEKFE.js"
+    },
+    "chunk-NVAVHLZZ": {
+      "file": "chunk-NVAVHLZZ.js"
+    },
+    "chunk-5WRI5ZAA": {
+      "file": "chunk-5WRI5ZAA.js"
+    }
+  }
+}

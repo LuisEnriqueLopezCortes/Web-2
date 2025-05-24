@@ -1,36 +1,29 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-type Usuario = {
-  id: number;
-  nombre: string;
-  usuario: string;
-  email: string;
-  tipo: string;
-  imagen: string;
-  // Agrega aquí otros campos necesarios como "tipo", "imagen", etc.
-};
+const UserContext = createContext<any>(null);
 
-type UserContextType = {
-  user: Usuario | null;
-  setUser: (user: Usuario) => void;
-};
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); 
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
-
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<Usuario | null>(null);
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem("usuario");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error al parsear usuario del sessionStorage:", error);
+      }
+    }
+    setLoading(false); // 👈 marca fin de carga
+  }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );
 };
 
-export const useUser = (): UserContextType => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser debe usarse dentro de un <UserProvider>");
-  }
-  return context;
-};
+export const useUser = () => useContext(UserContext);

@@ -71,6 +71,22 @@ export async function user_register(nombre, apellidos, fechaNacimiento, email, i
   }
 }
 
+export const logout_User = async (req, res) => {
+  try {
+    const { id } = req.body; // recibe el ID del usuario que cerró sesión
+
+    await prisma.user.update({
+      where: { id: Number(id) },
+      data: { estado: false },
+    });
+
+    res.status(200).json({ message: "Sesión cerrada correctamente." });
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+    res.status(500).json({ error: "Error al cerrar sesión." });
+  }
+};
+
 // Eliminar usuario por ID
 export async function delete_user(user_id) {
     try {

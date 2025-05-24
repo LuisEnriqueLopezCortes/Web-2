@@ -10,7 +10,8 @@ import {
     get_favorita,
     get_peliculas,
     get_generos,
-    registro_pelicula
+    registro_pelicula,
+    logout_User
 } from "./Controllers/Controller.js";
 
 
@@ -19,7 +20,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: "http://localhost:5173"  // Solo permití tu frontend
+  origin: "http://localhost:5173"  
 }));
 
 function validateRegisterData(req, res, next) {
@@ -45,9 +46,12 @@ function validateRegisterData(req, res, next) {
   next(); // Todo bien, sigue al controlador
 }
 
+//Logout
+app.post('/logout', logout_User);
+
 // Ruta de login
 app.post("/login", async (req, res) => {
-  console.log("Body recibido:", req.body); // 👈 agrega esto
+  console.log("Body recibido:", req.body);
   const { user, password } = req.body;
   const user_obj = await user_login(user, password);
   
@@ -88,6 +92,8 @@ app.post("/register", validateRegisterData, async (req, res) => {
     res.status(400).json({ error: "Usuario ya existe o error al registrar" });
   }
 });
+
+
 
 // Obtener todos los usuarios
 app.get("/user", async (req, res) => {

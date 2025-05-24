@@ -7,6 +7,7 @@ import { Perfil } from "../usuario/perfil";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import { useLocation } from "react-router-dom";
+import { useUser } from "../../context/Usercontext";
 
 interface MyNavbarProps {
   homeRef: React.RefObject<HTMLDivElement | null>;
@@ -18,7 +19,7 @@ export const MyNavbar = ({ homeRef }: MyNavbarProps) => {
   const [showPerfil, setShowPerfil] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
+  const { setUser } = useUser();
   const history = useNavigate();
 
   const goToPublicaciones = () => {
@@ -31,6 +32,10 @@ export const MyNavbar = ({ homeRef }: MyNavbarProps) => {
     history("/resenias");
   };
 
+  const goToChats = () => {
+    history("/chats");
+  };
+
   const toggleMenu = () => {
     setIsOpen(prevState => !prevState); // Alterna el estado del menú
   };
@@ -38,6 +43,24 @@ export const MyNavbar = ({ homeRef }: MyNavbarProps) => {
   const scrollToHome = () => {
     homeRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+ const logout = async () => {
+    const userId = sessionStorage.getItem("userId");
+
+    if (userId) {
+      await fetch("http://localhost:4000/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: userId })
+      });
+    }
+
+    sessionStorage.clear();
+    setUser(null);
+    history("/login");
+};
 
   return (
     <>
@@ -48,14 +71,19 @@ export const MyNavbar = ({ homeRef }: MyNavbarProps) => {
             <Navbar.Brand href="/">MovieBox</Navbar.Brand>
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ms-auto">
-                <Nav.Link onClick={() => setShowLogin(true)}>Inicio</Nav.Link>
-                <Nav.Link onClick={() => setShowRegister(true)}>
-                  Registro
-                </Nav.Link>
-                <Nav.Link onClick={goToPelicula}>Peliculas</Nav.Link>
-                <Nav.Link onClick={goToResenia}>Reseñas</Nav.Link>
-                <Nav.Link>Chat</Nav.Link>
-              </Nav>
+                
+                    <>
+                      <Nav.Link as={Link} to="/login">Iniciar sesión</Nav.Link>
+                      <Nav.Link onClick={() => setShowRegister(true)}>Registro</Nav.Link>
+                    </>
+                  
+                    <>
+                      <Nav.Link onClick={goToPelicula}>Peliculas</Nav.Link>
+                      <Nav.Link onClick={goToResenia}>Reseñas</Nav.Link>
+                      <Nav.Link onClick={goToChats}>Chat</Nav.Link>
+                    </>
+                 
+                </Nav>
               <Form className="d-flex ms-3">
                 <Form.Control
                   type="search"
@@ -94,7 +122,7 @@ export const MyNavbar = ({ homeRef }: MyNavbarProps) => {
                     <i className="bi bi-layout-text-sidebar-reverse"></i>&nbsp;
                     Mis reseñas
                   </Link>
-                  <a className="profile-dropdown-item">
+                  <a className="profile-dropdown-item"  onClick={logout}>
                     <i className="bi bi-box-arrow-left"></i>&nbsp; Cerrar sesión
                   </a>
                 </div>

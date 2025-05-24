@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Button, Form, Container, Row, Col, InputGroup } from "react-bootstrap";
 import "../../css/login.css";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/Usercontext"; // ajusta la ruta si es necesario
+
 
 export const Login = () => {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
      e.preventDefault();
@@ -31,12 +36,16 @@ export const Login = () => {
       const data = await response.json();
       console.log("Usuario autenticado:", data);
 
-      // Guardar ID y otros datos útiles en localStorage (opcional)
-      localStorage.setItem("userId", data.id);
-      localStorage.setItem("usuario", JSON.stringify(data));
+      // Guardar ID y otros datos útiles en localStorage
+      sessionStorage.setItem("userId", data.id);
+      sessionStorage.setItem("usuario", JSON.stringify({ ...data, estado: true }));
+      setUser(data);
+
 
       alert(`¡Sesión iniciada con éxito! ID: ${data.id}`);
       setError("");
+
+      navigate("/");
 
       // Aquí podrías redirigir o cambiar de vista
     } catch (err: any) {
