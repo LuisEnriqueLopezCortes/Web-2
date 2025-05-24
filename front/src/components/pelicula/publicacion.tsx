@@ -252,6 +252,14 @@ export const CardPublicacion = () => {
           </div>
         </div>
       </div>
+       <Modal
+        show={showPerfil}
+        onHide={() => setShowPerfil(false)}
+        centered
+        className="custom-modal-registro"
+      >
+        <Perfil />
+      </Modal>
     </>
   );
 };

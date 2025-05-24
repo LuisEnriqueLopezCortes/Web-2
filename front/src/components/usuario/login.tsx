@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Button, Form, Container, Row, Col, InputGroup } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, Modal, InputGroup } from "react-bootstrap";
 import "../../css/login.css";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/Usercontext"; // ajusta la ruta si es necesario
+import { useUser } from "../../context/UserContext"; // ajusta la ruta si es necesario
+import { Registro } from "../usuario/registro";
 
 
 export const Login = () => {
@@ -11,6 +12,8 @@ export const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { setUser } = useUser();
+    const [showRegister, setShowRegister] = useState(false);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
      e.preventDefault();
@@ -98,8 +101,25 @@ export const Login = () => {
           <Button variant="primary" type="submit" className="btn-login w-75">
             Iniciar sesión
           </Button>
+
+          
         </div>
+        <div className="text-center mt-3">
+  <Button variant="link" onClick={() => setShowRegister(true)} className="text-white">
+    ¿No tienes cuenta? Regístrate aquí
+  </Button>
+</div>
+
       </Form>
+       <Modal
+        show={showRegister}
+        onHide={() => setShowRegister(false)}
+        centered
+        className="custom-modal-registro"
+      >
+        <Registro />
+      </Modal>
     </Container>
+    
   );
 };

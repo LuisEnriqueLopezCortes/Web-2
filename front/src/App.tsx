@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Route, BrowserRouter as Router, Routes  } from 'react-router-dom';
 
-import { UserProvider } from "./context/Usercontext";
+import { UserProvider } from "./context/UserContext.tsx";
 
 import { Login } from "./components/usuario/login.tsx";
 import { RequireAuth } from "./components/auth/RequireAuth";

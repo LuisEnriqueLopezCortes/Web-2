@@ -7,7 +7,7 @@ import { Perfil } from "../usuario/perfil";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import { useLocation } from "react-router-dom";
-import { useUser } from "../../context/Usercontext";
+import { useUser } from "../../context/UserContext";
 
 interface MyNavbarProps {
   homeRef: React.RefObject<HTMLDivElement | null>;
