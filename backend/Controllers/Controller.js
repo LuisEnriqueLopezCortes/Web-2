@@ -53,7 +53,7 @@ export async function user_register(nombre, apellidos, fechaNacimiento, email, i
       data: {
         nombre,
         apellidos,
-        fechaNacimiento: new Date(fechaNacimiento), // Convierte string 'YYYY-MM-DD' a Date
+        fechaNacimiento: new Date(fechaNacimiento), 
         email,
         imagen,
         peliculaFavorita,
@@ -73,7 +73,7 @@ export async function user_register(nombre, apellidos, fechaNacimiento, email, i
 
 export const logout_User = async (req, res) => {
   try {
-    const { id } = req.body; // recibe el ID del usuario que cerró sesión
+    const { id } = req.body; 
 
     await prisma.user.update({
       where: { id: Number(id) },
@@ -113,7 +113,7 @@ export async function update_user_password(user_id, new_password) {
   }
 }
 
-// Películas favoritas (se asume un campo "favorita")
+// Películas favoritas 
 export async function get_favorita() {
     return await prisma.pelicula.findMany({
         where: { favorita: true },
@@ -158,5 +158,196 @@ export async function registro_pelicula(pelicula) {
   } catch (error) {
     console.error("Error al registrar película:", error);
     return null;
+  }
+}
+
+
+//Para traer usuarios disponibles pa chat
+export async function get_usuarios_disponibles(idUsuario) {
+    const usuarioId = parseInt(idUsuario);
+
+    const chats = await prisma.chat.findMany({
+        where: {
+            participantes: {
+                some: {
+                    usuarioId: usuarioId,
+                },
+            },
+        },
+        include: {
+            participantes: true,
+        },
+    });
+
+const idsBloqueados = new Set();
+    chats.forEach(chat => {
+        chat.participantes.forEach(p => {
+            if (p.usuarioId !== usuarioId) {
+                idsBloqueados.add(p.usuarioId);
+            }
+        });
+    });
+
+    idsBloqueados.add(usuarioId);
+
+    const disponibles = await prisma.user.findMany({
+        where: {
+            id: { notIn: Array.from(idsBloqueados) },
+        },
+        select: {
+            id: true,
+            usuario: true,
+            imagen: true,
+        },
+    });
+
+    return disponibles;
+}
+
+
+//Pa Traer los chats del usuario
+export async function get_chats_usuario(idUsuario) {
+  const usuarioId = parseInt(idUsuario);
+
+  const chats = await prisma.chat.findMany({
+    where: {
+      participantes: { some: { usuarioId } },
+    },
+    include: {
+      participantes: {
+        include: {
+          usuario: {
+            select: {
+              id: true,
+              usuario: true,
+              imagen: true,
+            },
+          },
+        },
+      },
+      mensajes: true,
+    },
+  });
+
+  const resultado = chats.map(chat => ({
+    ...chat,
+    participantes: chat.participantes.map(p => ({
+      ...p,
+      usuario: {
+        ...p.usuario,
+        imagen:
+          p.usuario.imagen
+            ? `data:image/png;base64,${p.usuario.imagen.toString('base64')}`
+            : null,
+      },
+    })),
+  }));
+
+  return resultado;
+}
+
+
+//ahora si crea chats xd
+export async function crear_chat(req, res) {
+    const { idUsuario1, idUsuario2 } = req.body;
+
+    if (!idUsuario1 || !idUsuario2 || idUsuario1 === idUsuario2) {
+        return res.status(400).json({ error: "IDs inválidos o iguales" });
+    }
+
+    try {
+        const nuevoChat = await prisma.chat.create({
+            data: {
+                participantes: {
+                    create: [
+                        { usuario: { connect: { id: idUsuario1 } } },
+                        { usuario: { connect: { id: idUsuario2 } } }
+                    ]
+                }
+            },
+            include: {
+                participantes: {
+                    include: {
+                        usuario: {
+                            select: { id: true, usuario: true, imagen: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        return res.status(201).json(nuevoChat);
+    } catch (error) {
+        console.error("Error al crear el chat:", error);
+        return res.status(500).json({ error: "No se pudo crear el chat" });
+    }
+}
+
+
+//Para la parte d emensajes
+
+export async function get_mensajes_chat(idChat) {
+  const chatId = parseInt(idChat);
+
+  const mensajes = await prisma.mensaje.findMany({
+    where: { chatId },
+    orderBy: { horaFecha: "asc" }, 
+    include: {
+      usuario: {
+        select: {
+          id: true,
+          usuario: true,
+          imagen: true
+        }
+      }
+    }
+  });
+
+  const resultado = mensajes.map(mensaje => ({
+    ...mensaje,
+    usuario: {
+      ...mensaje.usuario,
+      imagen: mensaje.usuario.imagen
+        ? `data:image/png;base64,${mensaje.usuario.imagen.toString('base64')}`
+        : null
+    }
+  }));
+
+  return resultado;
+}
+
+export async function crear_mensaje(req, res) {
+  const { chatId, usuarioId, textoMensaje } = req.body;
+
+  if (!chatId || !usuarioId || !textoMensaje?.trim()) {
+    return res.status(400).json({ error: "Datos faltantes o inválidos" });
+  }
+
+  try {
+    const nuevoMensaje = await prisma.mensaje.create({
+      data: {
+       chatId,
+     usuarioId,
+        textoMensaje
+      },
+      include: {
+        usuario: {
+          select: {
+        id: true,
+            usuario: true,
+            imagen: true
+       }
+        }
+      }
+    });
+
+    nuevoMensaje.usuario.imagen = nuevoMensaje.usuario.imagen
+      ? `data:image/png;base64,${nuevoMensaje.usuario.imagen.toString("base64")}`
+      : null;
+
+    res.status(201).json(nuevoMensaje);
+  } catch (error) {
+    console.error("Error al crear el mensaje:", error);
+    res.status(500).json({ error: "No se pudo enviar el mensaje" });
   }
 }

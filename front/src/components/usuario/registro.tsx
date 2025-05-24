@@ -12,14 +12,17 @@ export const Registro = () => {
   const [peliculaFavorita, setPeliculaFavorita] = useState("");
   const [usuario, setUsuario] = useState("");
   const [error, setError] = useState("");
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagen(URL.createObjectURL(file)); // Guarda una URL local para previsualización
-      // O también podés hacer esto si solo querés el nombre:
-      // setImagen(file.name);
-    }
+ const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setImagen(reader.result as string);
+  };
+  reader.readAsDataURL(file);
 };
+
 
 
   const handleSubmit = async (e: React.FormEvent) => {

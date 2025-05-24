@@ -24,18 +24,29 @@ import { useLocation } from "react-router-dom";
 export const ChatsComponent = () => {
 
     interface Mensaje {
-  texto: string;
-  tipo: 'texto' | 'pelicula';
+  id: number;
+  textoMensaje: string;
+  usuario: Usuario;
 }
 
 interface Usuario {
-  nombre: string;
-  // agrega más campos si los hay
+  id: number;
+  usuario: string;
+  imagen?: string | null;
 }
+
+interface Participante {
+  usuario: Usuario;
+}
+
+interface Chat {
+  id: number;
+  participantes: Participante[];
+}
+
 
 interface Pelicula {
   nombre: string;
-  // agrega más campos si los hay
 }
 
 const maxLength = 175;
@@ -65,7 +76,7 @@ const maxLength = 175;
     history("/chats");
   };
   const toggleMenu = () => {
-    setIsOpen((prevState) => !prevState); // Alterna el estado del menú
+    setIsOpen((prevState) => !prevState); 
   };
 
   const toggleLike = (index: number) => {
@@ -78,31 +89,168 @@ const maxLength = 175;
 
 
   const [showModal, setShowModal] = useState(false);
-const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+const [usuariosDisponibles, setUsuariosDisponibles] = useState<Usuario[]>([]);
+const [usuario, setUsuario] = useState<Usuario | null>(null);
+
 const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
   const [selectedUser, setSelectedUser] = useState('');
   const [selectedMovie, setSelectedMovie] = useState('');
+  const [selectedChat, setSelectedChat] = useState<any | null>(null);
+
+const [chats, setChats] = useState<any[]>([]);
+
+const [chatSeleccionado, setChatSeleccionado] = useState<Chat | null>(null);
 const [mensajes, setMensajes] = useState<Mensaje[]>([]);
-  const [nuevoMensaje, setNuevoMensaje] = useState('');
+const [nuevoMensaje, setNuevoMensaje] = useState("");
   const [showPeliDropdown, setShowPeliDropdown] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/usuarios')
-      .then((res) => res.json())
-      .then((data) => setUsuarios(data));
+//Traer usuario del login
+useEffect(() => {
+  const storedUser = sessionStorage.getItem("usuario");
+  if (storedUser) {
+    setUsuario(JSON.parse(storedUser));
+  }
+}, []);
 
+
+
+
+  useEffect(() => {
     fetch('/api/peliculas')
       .then((res) => res.json())
       .then((data) => setPeliculas(data));
   }, []);
 
-  const handleEnviar = () => {
-    if (nuevoMensaje.trim() !== '') {
-      setMensajes([...mensajes, { texto: nuevoMensaje, tipo: 'texto' }]);
-      setNuevoMensaje('');
+
+  //Llamar endpoints del backend para traer usuarios y chats
+      useEffect(() => {
+  if (!usuario?.id) return;
+
+  fetch(`/usuarios-disponibles/${usuario.id}`)
+    .then(async res => {
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Error usuarios:", text);
+        throw new Error("Respuesta no válida");
+      }
+      return res.json();
+    })
+    .then(data => setUsuariosDisponibles(data))
+    .catch(err => console.error("Error en usuarios disponibles:", err));
+
+  fetch(`/chats-usuario/${usuario.id}`)
+    .then(async res => {
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Error chats:", text);
+        throw new Error("Respuesta no válida");
+      }
+      return res.json();
+    })
+.then(data => {
+  const chats = data as {
+    participantes: { usuario: { usuario: string; imagen: string } }[];
+  }[];
+
+  chats.forEach(chat => {
+    chat.participantes.forEach(part => {
+      console.log(`📸 Imagen del usuario ${part.usuario.usuario}:`, part.usuario.imagen);
+    });
+  });
+
+  setChats(chats);
+})
+    .catch(err => console.error("Error en chats:", err));
+}, [usuario]);
+
+
+
+//Handle pa crear el chat
+const handleCrearChat = () => {
+ if (!usuario) {
+    console.warn("No hay usuario logueado");
+    return;
+  }
+  if (!selectedUser) {
+    alert("Debes seleccionar un usuario para chatear.");
+    return;
+  }
+  fetch('/crear-chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      idUsuario1: usuario.id,
+      idUsuario2: parseInt(selectedUser)
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log("Chat creado:", data);
+      setShowModal(false);
+
+      goToChats(); 
+    })
+    
+    .catch(err => {
+      console.error("Error creando chat:", err);
+      alert("Ocurrió un error al crear el chat.");
+    });
+};
+
+
+const handleSeleccionarChat = async (chat: Chat) => {
+    setSelectedChat(chat);
+    try {
+const res = await fetch(`/mensajes-chat/${chat.id}`);
+        if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+        }
+        const data = await res.json();
+        setMensajes(data); 
+    } catch (err) {
+        console.error("Error cargando mensajes del chat:", err);
     }
+    };
+
+
+ const handleEnviar = async () => {
+    if (!usuario) {
+  console.error("No hay usuario logueado");
+  return;
+}
+
+  if (!nuevoMensaje.trim() || !selectedChat) return;
+
+  const payload = {
+    chatId: selectedChat.id,
+    usuarioId: usuario.id,
+    textoMensaje: nuevoMensaje,
   };
 
+  try {
+    const res = await fetch("/enviar-mensaje", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text);
+    }
+
+    const nuevoMsg = await res.json();
+    setMensajes(prev => [...prev, nuevoMsg]);
+    setNuevoMensaje("");
+  } catch (err) {
+    console.error("Error al enviar mensaje:", err);
+  }
+};
+
+/*
   const handleMandarPelicula = () => {
     if (selectedMovie !== '') {
       setMensajes([...mensajes, { texto: selectedMovie, tipo: 'pelicula' }]);
@@ -110,6 +258,7 @@ const [mensajes, setMensajes] = useState<Mensaje[]>([]);
       setShowPeliDropdown(false);
     }
   };
+*/
 
   return (
     <>
@@ -182,21 +331,73 @@ const [mensajes, setMensajes] = useState<Mensaje[]>([]);
             Crear nuevo chat
           </Button>
         </div>
-        <ListGroup variant="flush">
-          <ListGroup.Item className="bg-dark text-white">Chat 1</ListGroup.Item>
-          <ListGroup.Item className="bg-dark text-white">Chat 2</ListGroup.Item>
-        </ListGroup>
+       <ListGroup variant="flush">
+  {chats.length > 0 && usuario ? (
+    chats.map((chat: Chat) => {
+      const otroParticipante = chat.participantes
+        .map((p) => p.usuario)
+        .find((u) => u.id !== usuario.id);
+
+      if (!otroParticipante) {
+        return null;
+      }
+
+      return (
+        <ListGroup.Item
+          key={chat.id}
+          action
+          active={selectedChat?.id === chat.id}
+onClick={() => handleSeleccionarChat(chat)}
+          className="d-flex align-items-center bg-dark text-white"
+        >
+          <img
+  src="/default.png"
+  alt="avatar"
+  width={30}
+  className="rounded-circle me-2"
+/>
+
+          <span>{otroParticipante.usuario}</span>
+        </ListGroup.Item>
+      );
+    })
+  ) : (
+    <ListGroup.Item className="bg-dark text-white">
+      No hay chats existentes
+    </ListGroup.Item>
+  )}
+</ListGroup>
+
+
+
+
       </div>
 
       {/* Chat principal */}
       <div className="chat-main p-3 flex-grow-1 d-flex flex-column">
         <div className="chat-messages flex-grow-1 p-2 rounded">
-          {mensajes.map((msg, i) => (
-            <div key={i} className={`mensaje ${msg.tipo}`}>
-              {msg.tipo === 'texto' ? msg.texto : <strong>🎬 {msg.texto}</strong>}
+            {usuario && mensajes.map((msg: Mensaje, i: number) => (
+                <div
+                    key={msg.id || i}
+                    className={`mensaje ${msg.usuario.id === usuario.id ? "mio" : "otro"}`}
+                >
+                    <div className="autor">
+                    <img
+  src="/default.png"
+  alt="avatar"
+  width={30}
+  className="rounded-circle me-2"
+/>
+
+                    <strong>{msg.usuario.usuario}</strong>
+                    </div>
+                    <div>{msg.textoMensaje}</div>
+                </div>
+                ))}
+
+
             </div>
-          ))}
-        </div>
+
         <div className="chat-input mt-2 d-flex gap-2">
           <Form.Control
             type="text"
@@ -225,11 +426,7 @@ const [mensajes, setMensajes] = useState<Mensaje[]>([]);
             ))}
           </Form.Select>
         )}
-        {selectedMovie && (
-          <Button variant="success" className="mt-2" onClick={handleMandarPelicula}>
-            Confirmar envío
-          </Button>
-        )}
+       
       </div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
@@ -237,28 +434,33 @@ const [mensajes, setMensajes] = useState<Mensaje[]>([]);
           <Modal.Title>Crear Nuevo Chat</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group controlId="formUsuarios">
+         <Form.Group controlId="formUsuarios">
             <Form.Label>Seleccionar Usuario</Form.Label>
             <Form.Select
-              value={selectedUser}
-              onChange={(e) => setSelectedUser(e.target.value)}
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
             >
-              <option value="">Selecciona un usuario</option>
-              {usuarios.map((user, index) => (
-                <option key={index} value={user.nombre}>
-                  {user.nombre}
-                </option>
-              ))}
+                <option value="">Selecciona un usuario</option>
+                {usuariosDisponibles
+                .filter((user) => user.id !== usuario?.id) 
+                .map((user, index) => (
+                    <option key={index} value={user.id.toString()}>
+                    {user.usuario}
+                    </option>
+                ))}
             </Form.Select>
-          </Form.Group>
+            </Form.Group>
+
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={() => setShowModal(false)}>
+         <Button variant="primary" onClick={handleCrearChat}>
             Crear Chat
-          </Button>
+            </Button>
+
         </Modal.Footer>
       </Modal>
     </div>

@@ -11,7 +11,11 @@ import {
     get_peliculas,
     get_generos,
     registro_pelicula,
-    logout_User
+    logout_User,
+     get_usuarios_disponibles,
+     get_chats_usuario,
+     crear_chat,
+      get_mensajes_chat, crear_mensaje 
 } from "./Controllers/Controller.js";
 
 
@@ -33,17 +37,15 @@ function validateRegisterData(req, res, next) {
     password
   } = req.body;
 
-  // Verifica campos obligatorios
   if (!nombre || !apellidos || !fechaNacimiento || !email || !usuario || !password) {
     return res.status(400).json({ error: "Todos los campos obligatorios deben ser completados" });
   }
 
-  // Verifica formato de fecha (YYYY-MM-DD)
   if (isNaN(Date.parse(fechaNacimiento))) {
     return res.status(400).json({ error: "Fecha de nacimiento inválida" });
   }
 
-  next(); // Todo bien, sigue al controlador
+  next(); 
 }
 
 //Logout
@@ -172,7 +174,35 @@ app.post("/registropelicula", async (req, res) => {
     }
 });
 
+//PARA CHATS
+app.get("/usuarios-disponibles/:idUsuario", async (req, res) => {
+    const { idUsuario } = req.params;
+    const usuarios = await get_usuarios_disponibles(idUsuario);
+    res.status(200).json(usuarios);
+});
+
+app.get("/chats-usuario/:idUsuario", async (req, res) => {
+    const { idUsuario } = req.params;
+    const chats = await get_chats_usuario(idUsuario);
+    res.status(200).json(chats);
+});
+
+app.post("/crear-chat", crear_chat);
+
+//Pa mandar mensasjes
+app.get("/mensajes-chat/:idChat", async (req, res) => {
+  const { idChat } = req.params;
+  const mensajes = await get_mensajes_chat(idChat);
+  res.status(200).json(mensajes);
+});
+
+app.post("/enviar-mensaje", crear_mensaje);
+
+
+
 // Configurar el puerto
 app.listen(4000, () => {
     console.log("Servidor levantado en el puerto 4000");
 });
+
+
