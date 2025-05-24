@@ -61,6 +61,9 @@ const maxLength = 175;
   const goToResenia = () => {
     history("/resenias");
   };
+  const goToChats = () => {
+    history("/chats");
+  };
   const toggleMenu = () => {
     setIsOpen((prevState) => !prevState); // Alterna el estado del menú
   };
@@ -121,7 +124,7 @@ const [mensajes, setMensajes] = useState<Mensaje[]>([]);
               </Nav.Link>
               <Nav.Link onClick={goToPelicula}>Peliculas</Nav.Link>
               <Nav.Link onClick={goToResenia}>Reseñas</Nav.Link>
-              <Nav.Link>Chat</Nav.Link>
+                <Nav.Link onClick={goToChats}>Chat</Nav.Link>
             </Nav>
             <Form className="d-flex ms-3">
               <Form.Control
